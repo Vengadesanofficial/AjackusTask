@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Management system</title>
+    <link rel="stylesheet" href="index.css" />
+    <script type="module" src="main.js"></script>
+    <script type="module" src="./stats.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <h1>Employee Management System</h1>
+        <p>Manage your team members</p>
+      </header>
+
+      <!-- Controls -->
+      <div class="controls-card">
+        <div class="controls-top">
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search employees..."
+              class="search-input"
+            />
+            <span class="search-icon"></span>
+          </div>
+
+          <div class="filters">
+            <select id="departmentFilter" class="filter-select">
+              <option value="all">All Departments</option>
+            </select>
+            <select id="roleFilter" class="filter-select">
+              <option value="all">All Roles</option>
+            </select>
+            <button class="btn-secondary" id="clearBtn">Clear</button>
+            <button class="btn-primary" onclick="openAddModal()">
+              + Add Employee
+            </button>
+          </div>
+        </div>
+
+        <div class="controls-bottom">
+          <div class="sort-controls">
+            <span>Sort by:</span>
+            <button class="sort-btn" data-field="firstName">First Name</button>
+            <button class="sort-btn" data-field="lastName">Last Name</button>
+            <button class="sort-btn" data-field="department">Department</button>
+            <button class="sort-btn" data-field="role">Role</button>
+          </div>
+
+          <div class="pagination-controls">
+            <span>Show:</span>
+            <select id="itemsPerPage" class="items-select">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <img src="assests//group.jpg" alt="" width="50px" />
+          </div>
+          <div class="stat-content">
+            <div class="stat-title">Total Employees</div>
+            <div class="stat-value" id="totalEmployees">0</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <img src="assests/dep.jpg" alt="" width="50px" />
+          </div>
+          <div class="stat-content">
+            <div class="stat-title">Departments</div>
+            <div class="stat-value" id="totalDepartments">0</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <img src="assests/act.jpg" alt="" width="50px" />
+          </div>
+          <div class="stat-content">
+            <div class="stat-title">Active Roles</div>
+            <div class="stat-value" id="totalRoles">0</div>
+          </div>
+        </div>
+      </div>
+      <!-- Results Info -->
+      <div class="results-info">
+        <span id="resultsText">Showing 0 of 0 employees</span>
+      </div>
+
+      <!-- Employee Grid -->
+      <div class="employee-grid" id="employeeGrid">
+        <!-- Employee cards will be generated here -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination">
+        <!-- Pagination buttons will be generated here -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none">
+        <div class="empty-icon">
+          <img src="assests/group.jpg" alt="" width="50px" />
+        </div>
+        <h3>No employees found</h3>
+        <p id="emptyMessage">Get started by adding your first employee</p>
+        <button class="btn-primary" onclick="openAddModal()">
+          Add Employee
+        </button>
+      </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div class="modal-overlay" id="modalOverlay" style="display: none">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="modalTitle">Add Employee</h2>
+          <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <form id="employeeForm" class="modal-form">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" required />
+            <span class="error-message" id="firstNameError"></span>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" required />
+            <span class="error-message" id="lastNameError"></span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required />
+            <span class="error-message" id="emailError"></span>
+          </div>
+          <div class="form-group">
+            <label for="department">Department *</label>
+            <select id="department" name="department" required>
+              <option value="">Select Department</option>
+              <option value="Engineering">Engineering</option>
+              <option value="HR">HR</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Sales">Sales</option>
+              <option value="Finance">Finance</option>
+            </select>
+            <span class="error-message" id="departmentError"></span>
+          </div>
+          <div class="form-group">
+            <label for="role">Role *</label>
+            <input type="text" id="role" name="role" required />
+            <span class="error-message" id="roleError"></span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeModal()">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">Save Employee</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" style="display: none">
+      <span id="toastMessage"></span>
+    </div>
+    <!-- footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-left">
+          <h3>Employee Management System</h3>
+          <p>&copy; 2025 Vengadesan. All rights reserved.</p>
+        </div>
+        <div class="footer-right">
+          <a href="#">Home</a>
+          <a href="#">About</a>
+          <a href="#">Support</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
